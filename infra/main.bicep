@@ -400,3 +400,4 @@ output SERVICE_API_URI string = api.outputs.SERVICE_API_URI
 output AZURE_FUNCTION_APP_NAME string = api.outputs.SERVICE_API_NAME
 output RESOURCE_GROUP string = rg.name
 output AZURE_OPENAI_ENDPOINT string = ai.outputs.endpoint
+output AZURE_AISEARCH_ENDPOINT string = aisearch.outputs.endpoint
