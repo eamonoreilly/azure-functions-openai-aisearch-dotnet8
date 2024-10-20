@@ -21,7 +21,7 @@ namespace AISearchSample
         }
 
         /// <summary>
-        /// HTTP trigger that takes a body in the format below.
+        /// HTTP trigger that takes a body in the format below and adds it to the AI Search semantic search.
         /// {
         ///    "Text": "Contoso support incident 3455 is about slow performance.",
         ///    "Title": "Contoso3455"

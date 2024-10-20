@@ -26,26 +26,23 @@ You can learn more about the OpenAI trigger and bindings extension in the [GitHu
 * [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/6.0) or greater (Visual Studio 2022 recommended)
 * [Azure Functions Core Tools v4.x](https://learn.microsoft.com/azure/azure-functions/functions-run-local?tabs=v4%2Cwindows%2Cnode%2Cportal%2Cbash)
 * [Azure OpenAI resource](https://learn.microsoft.com/azure/openai/overview)
+* [Azure AI Search resource](https://learn.microsoft.com/en-us/azure/search/)
 * [Azurite](https://github.com/Azure/Azurite)
+* [Azure Developer CLI](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/install-azd) to create Azure resources automatically - recommended
 
 ## Prepare your local environment
 
 ### Create Azure OpenAI and Azure AI Search resources for local and cloud dev-test
 
-Once you have your Azure subscription, run the following in a new terminal window to create Azure OpenAI, Azure AI Search and other resources needed: You will be asked if you want to enable a virtual network that will lock down your OpenAI and AI Search services so they are only available from the deployed function app over private endpoints. To skip virtual network integration, select true. You can still test locally with virtual network integration by adding your client IP address afterwards.
+Once you have your Azure subscription, run the following in a new terminal window to create Azure OpenAI, Azure AI Search and other resources needed: You will be asked if you want to enable a virtual network that will lock down your OpenAI and AI Search services so they are only available from the deployed function app over private endpoints. To skip virtual network integration, select true. If you select networking, your local IP will be added to the OpenAI and AI Search services so you can debug locally.
 ```bash
+azd init --template https://github.com/eamonoreilly/azure-functions-openai-aisearch-dotnet8
 azd provision
 ```
 
-Take note of the value of `AZURE_OPENAI_ENDPOINT` and `AZURE_AISEARCH_ENDPOINT` which can be found in `./.azure/<env name from azd provision>/.env`.  It will look something like:
-```bash
-AZURE_OPENAI_ENDPOINT="https://cog-<unique string>.openai.azure.com/"
-AZURE_AISEARCH_ENDPOINT="https://srch-<unique string>.search.windows.net/"
-```
+If you don't run azd provision, you can create an [OpenAI resource](https://portal.azure.com/#create/Microsoft.CognitiveServicesOpenAI) and an [AI Search resource](https://portal.azure.com/#create/Microsoft.Search) in the Azure portal to get your endpoints. After it deploys, click Go to resource and view the Endpoint value.  You will also need to deploy a model, e.g. with name `chat` with model `gpt-35-turbo` and `embeddings` with model `text-embedding-3-small`
 
-If you don't run azd provision, you can create an [OpenAI resource](https://portal.azure.com/#create/Microsoft.CognitiveServicesOpenAI) and an [AI Search resource](https://portal.azure.com/#create/Microsoft.Search) in the Azure portal to get your key and endpoint. After it deploys, click Go to resource and view the Endpoint value.  You will also need to deploy a model, e.g. with name `chat` and model `gpt-35-turbo` and `embeddings` with model `text-embedding-3-small`
-
-### Create local.settings.json (should be in the same folder as host.json)
+### Create local.settings.json (Should be in the same folder as host.json. Automatically created if you ran azd provision)
 ```json
 {
   "IsEncrypted": false,
@@ -70,7 +67,7 @@ If you used `azd provision` this step is already done - your logged in user and 
  
 
 ### Access to Azure OpenAI and Azure AI Search with virtual network integration
-If you selected virtual network integration, access to Azure OpenAI and Azure AI Search is limited to the Azure Function app through private endpoints and cannot be reached from the internet. To allow testing from your local machine, you need to go to the networking tab in Azure OpenAI and Azure AI Search and add your client ip to the allowed list. 
+If you selected virtual network integration, access to Azure OpenAI and Azure AI Search is limited to the Azure Function app through private endpoints and cannot be reached from the internet. To allow testing from your local machine, you need to go to the networking tab in Azure OpenAI and Azure AI Search and add your client ip to the allowed list. If you used `azd provision` this step is already done.
 
 ## Run your app using Visual Studio Code
 
@@ -78,13 +75,13 @@ If you selected virtual network integration, access to Azure OpenAI and Azure AI
 1. Run the `code .` code command to open the project in Visual Studio Code.
 1. In the command palette (F1), type `Azurite: Start`, which enables debugging without warnings.
 1. Press **Run/Debug (F5)** to run in the debugger. Select **Debug anyway** if prompted about local emulator not running.
-1. Send GET and POST requests to the `httpget` and `httppost` endpoints respectively using your HTTP test tool (or browser for `httpget`). If you have the [RestClient](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) extension installed, you can execute requests directly from the [`test.http`](./app/test.http) project file.
+1. Send POST requests to the `ingest` and `ask` endpoints respectively using your HTTP test tool. If you have the [RestClient](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) extension installed, you can execute requests directly from the [`test.http`](./app/test.http) project file.
 
 ## Run your app using Visual Studio
 
 1. Open the `AISearchSample.sln` solution file in Visual Studio.
 1. Press **Run/F5** to run in the debugger. Make a note of the `localhost` URL endpoints, including the port, which might not be `7071`.
-1. Open the [`test.http`](./app/test.http) project file, update the port on the `localhost` URL (if needed), and then use the built-in HTTP client to call the `httpget` and `httppost` endpoints.
+1. Open the [`test.http`](./app/test.http) project file, update the port on the `localhost` URL (if needed), and then use the built-in HTTP client to call the `ingest` and `ask` endpoints.
 
 
 ## Deploy to Azure
