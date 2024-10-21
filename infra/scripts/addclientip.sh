@@ -16,11 +16,18 @@ done <<< "$output"
 
 # Read the config.json file to see if vnet is enabled
 ConfigFolder=$(echo "$ResourceGroup" | cut -d'-' -f2)
-jsonContent=$(cat ".azure/$ConfigFolder/config.json")
+configFile=".azure/$ConfigFolder/config.json"
 
-skipVnet=$(echo "$jsonContent" | grep -oP '"skipVnet":\s*\K(true|false)')
+if [[ -f "$configFile" ]]; then
+    jsonContent=$(cat "$configFile")
+    skipVnet=$(echo "$jsonContent" | grep '"skipVnet"' | sed 's/.*"skipVnet":\s*"\([^"]*\)".*/\1/')
+else
+    echo "Config file $configFile not found. Assuming VNet is enabled."
+    skipVnet="false"
+fi
 
-if [[ $skipVnet == "true" ]]; then
+# skipVnet is in the form "skipVnet": false
+if echo "$skipVnet" | grep -iq "true"; then
     echo "VNet is not enabled. Skipping adding the client IP to the network rule of the Azure OpenAI and the Azure AI Search services"
 else
     echo "VNet is enabled. Adding the client IP to the network rule of the Azure OpenAI and the Azure AI Search services"
