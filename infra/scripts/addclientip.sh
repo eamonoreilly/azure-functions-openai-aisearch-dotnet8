@@ -15,7 +15,7 @@ while IFS= read -r line; do
 done <<< "$output"
 
 # Read the config.json file to see if vnet is enabled
-ConfigFolder=$(echo "$ResourceGroup" | cut -d'-' -f2)
+ConfigFolder=$(echo "$ResourceGroup" | cut -d'-' -f2-)
 configFile=".azure/$ConfigFolder/config.json"
 
 if [[ -f "$configFile" ]]; then

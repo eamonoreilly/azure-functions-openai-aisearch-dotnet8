@@ -1,8 +1,8 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
 
-name: azure-functions-openai-rag-aisearch
+name: azure-functions-openai-rag-aisearch-dotnet8
 metadata:
-  template: azure-functions-openai-rag-aisearch8@1.0.0
+  template: azure-functions-openai-rag-aisearch-dotnet8@1.0.0
 services:
   api:
     project: ./app/

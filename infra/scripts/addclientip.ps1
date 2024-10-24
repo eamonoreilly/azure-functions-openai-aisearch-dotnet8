@@ -16,7 +16,7 @@ foreach ($line in $output) {
 }
 
 # Read the config.json file to see if vnet is enabled
-$ConfigFolder = ($ResourceGroup -split "-")[1]
+$ConfigFolder = ($ResourceGroup -split '-' | Select-Object -Skip 1) -join '-'
 $jsonContent = Get-Content -Path ".azure\$ConfigFolder\config.json" -Raw | ConvertFrom-Json
 if ($jsonContent.infra.parameters.skipVnet -eq $true) {
     Write-Output "VNet is not enabled. Skipping adding the client IP to the network rule of the Azure OpenAI and the Azure AI Search services"
