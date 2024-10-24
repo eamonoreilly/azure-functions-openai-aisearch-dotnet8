@@ -48,7 +48,7 @@ namespace AISearchSample
 
             return new EmbeddingsStoreOutputResponse
             {
-                HttpResponse = new OkObjectResult(new { status = HttpStatusCode.OK }),
+                HttpResponse = new OkObjectResult(new { status = HttpStatusCode.OK, message = "Text ingested into AI Search" }),
                 SearchableDocument = new SearchableDocument(requestBody.Title)
             };
         }
@@ -68,6 +68,7 @@ namespace AISearchSample
             [EmbeddingsStoreOutput("{Text}", InputType.RawText, "AZURE_AISEARCH_ENDPOINT", "openai-index", Model = "%EMBEDDING_MODEL_DEPLOYMENT_NAME%")]
             public SearchableDocument? SearchableDocument { get; init; }
 
+           [HttpResult]
             public IActionResult? HttpResponse { get; set; }
         }
 
